@@ -1,8 +1,3 @@
-import os
-import sys
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
 import streamlit as st
 from graph_builder import app
 
@@ -33,15 +28,15 @@ if st.button("Analyze & Get Guidelines", type="primary"):
                 "retrieved_guidelines": "",
                 "final_assessment": ""
             }
-            
+
             result = app.invoke(initial_state)
-            
+
             st.subheader("📋 Patient Profile Summary")
             st.info(result.get("patient_profile", {}).get("summary", "N/A"))
-            
+
             st.subheader("📚 Retrieved MOH Guidelines")
             with st.expander("View Grounding Documents"):
                 st.write(result.get("retrieved_guidelines", "No specific context retrieved."))
-                
+
             st.subheader("💡 Expert Clinical Assessment & Recommendations")
             st.success(result.get("final_assessment", "No assessment generated."))
