@@ -9,3 +9,4 @@ An Agentic AI system designed to assist mothers and health workers with MOH Sri 
 - Multi-Agent Pipeline: Active and tested with Sri Lankan MOH guidelines.
 - UI Framework: Streamlit is fully configured and operational.
 - Tech Stack: LangGraph, LangChain, Groq, OpenRouter, and HuggingFace.
+- Security: Secure API key loading implemented via Colab Secrets.
