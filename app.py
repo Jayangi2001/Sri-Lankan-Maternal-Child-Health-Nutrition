@@ -15,7 +15,6 @@ st.set_page_config(
 st.title("👶 Sri Lankan Maternal & Child Health Nutrition System")
 st.markdown("---")
 
-# User Input
 user_query = st.text_area(
     "Enter patient query / scenario:",
     placeholder="e.g., A 6-month-old infant is underweight and refusing complementary food. What MOH guidelines apply?",
