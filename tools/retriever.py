@@ -3,7 +3,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
-def get_retriever():
+def search_moh_nutrition_knowledge_base(query: str):
     sample_docs = [
         Document(page_content="MOH Sri Lanka Infant Feeding Guidelines: Exclusive breastfeeding is recommended for the first 6 months of life."),
         Document(page_content="Complementary feeding should begin at 6 months alongside continued breastfeeding up to 2 years or beyond."),
@@ -13,4 +13,6 @@ def get_retriever():
     
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.from_documents(sample_docs, embeddings)
-    return vectorstore.as_retriever(search_kwargs={"k": 2})
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
+    docs = retriever.invoke(query)
+    return [doc.page_content for doc in docs]

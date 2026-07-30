@@ -1,8 +1,9 @@
+%%writefile agents/retriever_agent.py
 from tools.retriever import search_moh_nutrition_knowledge_base
-from state import MaternalHealthState
+from state import MedicalState
 
-def retriever_agent(state: MaternalHealthState) -> dict:
-    profile = state.get("patient_profile", {}).get("summary", "")
-    query = f"{state['user_query']} {profile}"
-    context = search_moh_nutrition_knowledge_base.invoke(query)
-    return {"retrieved_guidelines": context}
+def retriever_agent(state: MedicalState) -> MedicalState:
+    query = state['user_input']
+    docs = search_moh_nutrition_knowledge_base(query)
+    state['retrieved_docs'] = docs
+    return state
