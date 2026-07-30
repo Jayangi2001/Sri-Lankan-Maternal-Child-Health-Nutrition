@@ -1,1 +1,0 @@
-# ChromaDB Vector Store Handler

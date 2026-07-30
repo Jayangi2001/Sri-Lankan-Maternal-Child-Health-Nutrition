@@ -20,7 +20,7 @@ subprocess.Popen([
     "--server.headless", "true"
 ])
 
-time.sleep(3)
+time.sleep(4)
 
 url = output.eval_js("google.colab.kernel.proxyPort(8501)")
 print("\n" + "="*60)
