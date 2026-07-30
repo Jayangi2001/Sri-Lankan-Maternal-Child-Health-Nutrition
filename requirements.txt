@@ -1,5 +1,10 @@
 streamlit
 langgraph
 langchain
-groq
-chromadb
+langchain-core
+langchain-community
+langchain-groq
+langchain-openai
+langchain-huggingface
+sentence-transformers
+faiss-cpu
