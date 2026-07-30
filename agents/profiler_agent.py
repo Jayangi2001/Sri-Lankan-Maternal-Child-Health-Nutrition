@@ -1,16 +1,22 @@
-import os
+import json
 from langchain_groq import ChatGroq
-from langchain_core.messages import HumanMessage
 from state import MaternalHealthState
 
-def profiler_agent(state: MaternalHealthState) -> dict:
-    llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
-    query = state["user_query"]
+def profiler_agent(state: MaternalHealthState) -> MaternalHealthState:
     
-    prompt = f"""Extract patient profile details from this query:
-    Category: (Pregnant / Lactating / Infant 0-6m / Child 6-24m)
-    Nutritional Issue: (Anemia, Thriposha, Underweight, etc.)
-    Query: {query}"""
+    user_text = state.get("user_input") or state.get("user_query", "")
     
-    res = llm.invoke([HumanMessage(content=prompt)])
-    return {"patient_profile": {"summary": res.content}}
+    llm = ChatGroq(model_name="llama-3.3-70b-versatile", temperature=0)
+    prompt = f"""
+    Extract key clinical information (Age, Stage, Symptoms, Category) from the user input.
+    Input: {user_text}
+    Respond ONLY with a valid JSON object.
+    """
+    res = llm.invoke(prompt)
+    try:
+        profile = json.loads(res.content)
+    except:
+        profile = {"raw_notes": res.content}
+    
+    state['patient_profile'] = profile
+    return state
