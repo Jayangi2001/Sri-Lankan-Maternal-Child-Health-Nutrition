@@ -11,11 +11,13 @@ def reviewer_agent(state: MaternalHealthState) -> MaternalHealthState:
         groq_api_key=groq_api_key
     )
     
+    user_text = state.get("user_input") or state.get("user_query", "")
+    
     prompt = f"""
     You are an expert Sri Lankan MOH Maternal & Child Health Nutrition Advisor.
-    Patient Profile: {state.get('patient_profile')}
-    MOH Guidelines Context: {state.get('retrieved_docs')}
-    User Question: {state['user_input']}
+    Patient Profile: {state.get('patient_profile', {})}
+    MOH Guidelines Context: {state.get('retrieved_docs', [])}
+    User Question: {user_text}
     
     Provide a clear, clinical, empathetic response and actionable nutritional advice.
     """
