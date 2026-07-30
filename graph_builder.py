@@ -4,17 +4,15 @@ from agents.profiler_agent import profiler_agent
 from agents.retriever_agent import retriever_agent
 from agents.reviewer_agent import reviewer_agent
 
-def build_graph():
-    builder = StateGraph(MaternalHealthState)
-    builder.add_node("profiler", profiler_agent)
-    builder.add_node("retriever", retriever_agent)
-    builder.add_node("reviewer", reviewer_agent)
+builder = StateGraph(MaternalHealthState)
 
-    builder.set_entry_point("profiler")
-    builder.add_edge("profiler", "retriever")
-    builder.add_edge("retriever", "reviewer")
-    builder.add_edge("reviewer", END)
+builder.add_node("profiler", profiler_agent)
+builder.add_node("retriever", retriever_agent)
+builder.add_node("reviewer", reviewer_agent)
 
-    return builder.compile()
+builder.set_entry_point("profiler")
+builder.add_edge("profiler", "retriever")
+builder.add_edge("retriever", "reviewer")
+builder.add_edge("reviewer", END)
 
-app = build_graph()
+app = builder.compile()

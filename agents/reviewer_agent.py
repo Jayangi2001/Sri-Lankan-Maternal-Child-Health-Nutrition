@@ -12,15 +12,22 @@ def reviewer_agent(state: MaternalHealthState) -> MaternalHealthState:
     )
     
     user_text = state.get("user_input") or state.get("user_query", "")
+    profile = state.get('patient_profile', {})
+    docs = state.get('retrieved_docs', [])
     
     prompt = f"""
     You are an expert Sri Lankan MOH Maternal & Child Health Nutrition Advisor.
-    Patient Profile: {state.get('patient_profile', {})}
-    MOH Guidelines Context: {state.get('retrieved_docs', [])}
+    Patient Profile: {profile}
+    MOH Guidelines Context: {docs}
     User Question: {user_text}
     
-    Provide a clear, clinical, empathetic response and actionable nutritional advice.
+    Provide a clear, clinical, empathetic response and actionable nutritional advice based on Sri Lankan MOH guidelines.
     """
-    res = llm.invoke(prompt)
-    state['final_response'] = res.content
+    
+    try:
+        res = llm.invoke(prompt)
+        state['final_response'] = str(res.content)
+    except Exception as e:
+        state['final_response'] = f"Error generating advice: {str(e)}"
+        
     return state
