@@ -1,25 +1,16 @@
 import os
-from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_core.tools import tool
+from langchain_community.vectorstores import FAISS
+from langchain.schema import Document
 
-# 1. Load HuggingFace Embeddings & FAISS Vector DB
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-
-if os.path.exists("vectorstore_db"):
-    vector_db = FAISS.load_local("vectorstore_db", embeddings, allow_dangerous_deserialization=True)
-    retriever = vector_db.as_retriever(search_kwargs={"k": 3})
-else:
-    retriever = None
-
-@tool
-def search_moh_nutrition_knowledge_base(query: str) -> str:
-    """Useful to search Sri Lanka MOH Maternal and Child Health Nutrition Guidelines, Thriposha rules, and supplement dosages. Use this tool for nutritional context."""
-    if not retriever:
-        return "Vector database 'vectorstore_db' not found. Please run vector_store.py first."
+def get_retriever():
+    sample_docs = [
+        Document(page_content="MOH Sri Lanka Infant Feeding Guidelines: Exclusive breastfeeding is recommended for the first 6 months of life."),
+        Document(page_content="Complementary feeding should begin at 6 months alongside continued breastfeeding up to 2 years or beyond."),
+        Document(page_content="Maternal Nutrition: Pregnant and lactating mothers require daily Iron and Folic Acid supplements provided by MOH clinics."),
+        Document(page_content="Growth Monitoring: Growth faltering occurs if a child's weight curve flattens on the CHDR (Child Health Development Record) card.")
+    ]
     
-    docs = retriever.invoke(query)
-    if not docs:
-        return "No relevant MOH guidelines found."
-    
-    return "\n\n".join([doc.page_content for doc in docs])
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    vectorstore = FAISS.from_documents(sample_docs, embeddings)
+    return vectorstore.as_retriever(search_kwargs={"k": 2})
