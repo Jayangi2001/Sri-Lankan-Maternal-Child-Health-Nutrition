@@ -1,9 +1,13 @@
 import os
 import subprocess
 import time
+from google.colab import userdata
 from google.colab import output
 
-print("API Keys configured successfully!")
+os.environ["GROQ_API_KEY"] = userdata.get('GROQ_API_KEY')
+os.environ["OPENROUTER_API_KEY"] = userdata.get('OPENROUTER_API_KEY')
+
+print("API Keys loaded securely from Colab Secrets!")
 
 !pkill -f streamlit
 
