@@ -1,9 +1,7 @@
-from typing import TypedDict, Annotated, List
-from langgraph.graph.message import add_messages
+from typing import TypedDict, Any, List
 
-class MaternalHealthState(TypedDict):
-    messages: Annotated[List, add_messages]
-    user_query: str
+class MaternalHealthState(TypedDict, total=False):
+    user_input: str
     patient_profile: dict
-    retrieved_guidelines: str
-    final_assessment: str
+    retrieved_docs: List[str]
+    final_response: str
