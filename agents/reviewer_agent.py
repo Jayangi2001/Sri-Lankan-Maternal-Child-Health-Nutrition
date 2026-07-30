@@ -1,11 +1,14 @@
-from langchain_openai import ChatOpenAI
+import os
+from langchain_groq import ChatGroq
 from state import MaternalHealthState
 
 def reviewer_agent(state: MaternalHealthState) -> MaternalHealthState:
+    groq_api_key = os.getenv("GROQ_API_KEY")
     
-    llm = ChatOpenAI(
-        model="openai/gpt-3.5-turbo",
-        openai_api_base="https://openrouter.ai/api/v1"
+    llm = ChatGroq(
+        model_name="llama-3.3-70b-versatile",
+        temperature=0.7,
+        groq_api_key=groq_api_key
     )
     
     prompt = f"""
