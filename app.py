@@ -15,21 +15,22 @@ st.set_page_config(
 st.markdown("""
     <style>
     .main { background-color: #f8f9fa; }
+    
     .header-card {
         background: linear-gradient(135deg, #0d6efd 0%, #00d2ff 100%);
         padding: 24px;
         border-radius: 12px;
-        color: white;
+        color: white !important;
         text-align: center;
         margin-bottom: 25px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .header-card h1 { color: white !important; margin-bottom: 5px; font-weight: 700; }
-    .header-card p { font-size: 1.1rem; opacity: 0.9; }
+    .header-card p { color: white !important; font-size: 1.1rem; opacity: 0.9; }
 
     div.stButton > button:first-child {
         background: linear-gradient(90deg, #198754 0%, #20c997 100%);
-        color: white;
+        color: white !important;
         font-size: 1.1rem;
         font-weight: bold;
         border: none;
@@ -45,27 +46,24 @@ st.markdown("""
         transform: translateY(-2px);
     }
 
-    .info-card {
-        background-color: #ffffff;
-        padding: 18px;
-        border-radius: 10px;
-        border-left: 5px solid #0d6efd;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        margin-bottom: 15px;
-    }
     .context-card {
-        background-color: #eef7ff;
+        background-color: #1e293b;
+        color: #f8fafc !important;
         padding: 15px;
         border-radius: 8px;
-        border-left: 4px solid #0284c7;
+        border-left: 5px solid #0284c7;
         margin-bottom: 10px;
     }
+    
     .advice-card {
-        background-color: #f0fdf4;
+        background-color: #14532d;
+        color: #f0fdf4 !important;
         padding: 20px;
         border-radius: 10px;
-        border-left: 6px solid #16a34a;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        border-left: 6px solid #22c55e;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        font-size: 1.05rem;
+        line-height: 1.6;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -101,10 +99,12 @@ with col2:
                 initial_state = {"user_input": user_query}
                 result = app.invoke(initial_state)
                 
+                final_advice = result.get("final_response") or "No recommendation generated."
+                
                 st.markdown("### 🩺 Final Clinical Recommendation")
                 st.markdown(f"""
                     <div class="advice-card">
-                        {result.get("final_response", "No recommendation generated.")}
+                        {final_advice}
                     </div>
                 """, unsafe_allow_html=True)
                 
@@ -114,9 +114,13 @@ with col2:
                     st.json(result.get("patient_profile", {}))
                     
                 with st.expander("📚 View Retrieved MOH Context Guidelines", expanded=False):
-                    for doc in result.get("retrieved_docs", []):
-                        st.markdown(f"""
-                            <div class="context-card">
-                                📌 {doc}
-                            </div>
-                        """, unsafe_allow_html=True)
+                    retrieved_docs = result.get("retrieved_docs", [])
+                    if isinstance(retrieved_docs, list) and len(retrieved_docs) > 0:
+                        for doc in retrieved_docs:
+                            st.markdown(f"""
+                                <div class="context-card">
+                                    📌 {doc}
+                                </div>
+                            """, unsafe_allow_html=True)
+                    else:
+                        st.info("No specific guidelines retrieved.")
