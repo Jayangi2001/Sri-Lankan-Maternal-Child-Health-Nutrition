@@ -1,4 +1,9 @@
+import os
 import streamlit as st
+
+if "GROQ_API_KEY" in st.secrets:
+    os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+
 from graph_builder import app
 
 st.set_page_config(
@@ -9,12 +14,7 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Main Background and Fonts */
-    .main {
-        background-color: #f8f9fa;
-    }
-    
-    /* Header Card Style */
+    .main { background-color: #f8f9fa; }
     .header-card {
         background: linear-gradient(135deg, #0d6efd 0%, #00d2ff 100%);
         padding: 24px;
@@ -24,17 +24,9 @@ st.markdown("""
         margin-bottom: 25px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    .header-card h1 {
-        color: white !important;
-        margin-bottom: 5px;
-        font-weight: 700;
-    }
-    .header-card p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-    }
+    .header-card h1 { color: white !important; margin-bottom: 5px; font-weight: 700; }
+    .header-card p { font-size: 1.1rem; opacity: 0.9; }
 
-    /* Highlighted Button */
     div.stButton > button:first-child {
         background: linear-gradient(90deg, #198754 0%, #20c997 100%);
         color: white;
@@ -53,7 +45,6 @@ st.markdown("""
         transform: translateY(-2px);
     }
 
-    /* Result Boxes / Cards */
     .info-card {
         background-color: #ffffff;
         padding: 18px;
@@ -62,7 +53,6 @@ st.markdown("""
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         margin-bottom: 15px;
     }
-    
     .context-card {
         background-color: #eef7ff;
         padding: 15px;
@@ -70,7 +60,6 @@ st.markdown("""
         border-left: 4px solid #0284c7;
         margin-bottom: 10px;
     }
-    
     .advice-card {
         background-color: #f0fdf4;
         padding: 20px;
@@ -105,6 +94,8 @@ with col2:
     if submit_btn:
         if not user_query.strip():
             st.warning("⚠️ Please enter a valid patient query or details.")
+        elif "GROQ_API_KEY" not in os.environ or not os.environ["GROQ_API_KEY"]:
+            st.error("🔑 GROQ_API_KEY is missing! Please set it in Streamlit Secrets.")
         else:
             with st.spinner("⏳ Multi-Agent System is analyzing guidelines..."):
                 initial_state = {"user_input": user_query}
@@ -121,7 +112,7 @@ with col2:
                 
                 with st.expander("📋 View Extracted Patient Profile", expanded=False):
                     st.json(result.get("patient_profile", {}))
-                
+                    
                 with st.expander("📚 View Retrieved MOH Context Guidelines", expanded=False):
                     for doc in result.get("retrieved_docs", []):
                         st.markdown(f"""
