@@ -18,8 +18,7 @@ The Maternal & Child Health Nutrition Advisor is an advanced Multi-Agent AI appl
 ---
 
 ## Live Streamlit Demo Link
-* **Live App URL:** Open Streamlit App --> https://8501-m-s-kkb-usw4b2-k6nk08l6n71c-b.us-west4-2.prod.colab.dev
-
+* **Live App URL:** Open Streamlit App --> https://sri-lankan-maternal-child-health-nutrition-8r2mc9jaq793clms9rg.streamlit.app/
 ---
 
 ## Architecture Diagram
